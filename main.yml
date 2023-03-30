@@ -5,4 +5,4 @@
   strategy: free
   become: true
   roles:
-    - { role: mq-install }
+    - { role: mq-objects }
