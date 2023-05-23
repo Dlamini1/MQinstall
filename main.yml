@@ -1,7 +1,7 @@
 ---
 - name: IBM MQ
   hosts: all
-  gather_facts: False
+  gather_facts: true
   strategy: free
   become: true
   roles:
