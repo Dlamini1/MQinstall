@@ -3,7 +3,7 @@
   shell:
     cmd: ./dmpmqcfg -m DMRX01 -a > /tmp/DMRX01.mqsc
     chdir: /opt/mqm/bin
-	 when: "{{ inventory_hostname == 'server1' }}"
+	 when: "{{ inventory_hostname == '10.22.2.101' }}"
    register: mqstat
    - debug:
        var: mqstat.stdout_lines
@@ -14,5 +14,5 @@
 
 - name: Copy the DMRX01.mqsc file from the master to the backup server
   copy: src=buffer/DMRX01.mqsc dest=/tmp
-  when: "{{ inventory_hostname == 'server2' }}"
+  when: "{{ inventory_hostname == '10.22.2.102' }}"
 
