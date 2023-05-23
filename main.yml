@@ -1,6 +1,6 @@
 ---
 - name: IBM MQ
-  hosts: dev
+  hosts: all
   gather_facts: False
   strategy: free
   become: true
