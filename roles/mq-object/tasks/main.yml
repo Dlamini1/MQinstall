@@ -1,7 +1,8 @@
 ---
 - name: Backup Queue Manager objects DMRX01.mqsc
   shell:
-    cmd: ./dmpmqcfg -m DMRX01 -a > /tmp/DMRX01.mqsc
+    cmd: ./dspmq
+    #cmd: ./dmpmqcfg -m DMRX01 -a > /tmp/DMRX01.mqsc
     chdir: /opt/mqm/bin
   #when: "{{ inventory_hostname == '10.22.2.101' }}"
   #register: mqstat
