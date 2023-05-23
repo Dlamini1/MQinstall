@@ -1,40 +1,18 @@
-- hosts: all
-  become_user: mqm
-  become_method: sudo
-  tasks:
-    - name: dspmqver
-      shell:
-      #cmd:  "echo 'DISPLAY LSSTATUS(TCP) STATUS' |./runmqsc STCPQMGRUC03"
-       cmd: ./dspmqver
-       chdir: /opt/mqm/bin
-      register: mqstat
+--
+- name: Backup Queue Manager objects DMRX01.mqsc
+  shell:
+    cmd: ./dmpmqcfg -m DMRX01 -a > /tmp/DMRX01.mqsc
+    chdir: /opt/mqm/bin
+	 when: "{{ inventory_hostname == 'server1' }}"
+   register: mqstat
+   - debug:
+       var: mqstat.stdout_lines
+- name: Fetch the DMRX01.mqsc file from 10.22.2.101 to the master
+  run_once: yes
+  fetch: src=/tmp/DMRX01.mqsc dest=buffer/ flat=yes
+  when: "{{ inventory_hostname == 'server1' }}"
 
-    - debug:
-        var: mqstat.stdout_lines
-
-    - name: dspmq
-      shell:
-       cmd: ./dspmq
-       chdir: /opt/mqm/bin
-      register: mqstat
-
-    - debug:
-        var: mqstat.stdout_lines
-
-    - name: Display Listener status
-      shell:
-        cmd: ./dmpmqcfg -m STCPQMGRUC03 -a > /tmp/STCPQMGRUC03.mqsc
-        chdir: /opt/mqm/bin
-      register: mqstat
-    - debug:
-        var: mqstat.stdout_lines
-
-
-    - name: Display Listener status
-      shell:
-        cmd: "echo 'DISPLAY LSSTATUS(TCP) STATUS' | /opt/mqm/bin/runmqsc STCPQMGRUC03"
-        chdir: /opt/mqm/bin
-      register: mqstat
-    - debug:
-        var: mqstat.stdout_lines
+- name: Copy the DMRX01.mqsc file from the master to the backup server
+  copy: src=buffer/DMRX01.mqsc dest=/tmp
+  when: "{{ inventory_hostname == 'server2' }}"
 
