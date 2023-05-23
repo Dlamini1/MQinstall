@@ -3,8 +3,14 @@
   hosts: all
   gather_facts: true
   strategy: free
+  become_user: mqm
+  become_method: sudo
   become: true
   roles:
     - { role: mq-object}
    # - { role: filesystem}
     #- { role: mq-installation}
+    
+    
+  
+
