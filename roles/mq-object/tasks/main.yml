@@ -1,4 +1,4 @@
---
+---
 - name: Backup Queue Manager objects DMRX01.mqsc
   shell:
     cmd: ./dmpmqcfg -m DMRX01 -a > /tmp/DMRX01.mqsc
