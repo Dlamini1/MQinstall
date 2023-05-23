@@ -1,39 +1,39 @@
+---
+#MQ ansible
 - hosts: all
   become_user: mqm
+  become: true
   become_method: sudo
   tasks:
-    - name: dspmqver
+    - name: CREATE QMGR
       shell:
-      #cmd:  "echo 'DISPLAY LSSTATUS(TCP) STATUS' |./runmqsc STCPQMGRUC03"
-       cmd: ./dspmqver
+       cmd: ./crtmqm TEST
        chdir: /opt/mqm/bin
       register: mqstat
-
     - debug:
         var: mqstat.stdout_lines
 
-    - name: dspmq
+    - name: DISPLAY QMGR STATUS
       shell:
        cmd: ./dspmq
        chdir: /opt/mqm/bin
       register: mqstat
-
     - debug:
         var: mqstat.stdout_lines
 
-    - name: Display Listener status
+    - name: START QMGR
       shell:
-        cmd: ./dmpmqcfg -m STCPQMGRUC03 -a > /tmp/STCPQMGRUC03.mqsc
-        chdir: /opt/mqm/bin
+       cmd: ./strmqm TEST
+       chdir: /opt/mqm/bin
       register: mqstat
     - debug:
         var: mqstat.stdout_lines
 
-
-    - name: Display Listener status
+    - name: DISPLAY QMGR STATUS
       shell:
-        cmd: "echo 'DISPLAY LSSTATUS(TCP) STATUS' | /opt/mqm/bin/runmqsc STCPQMGRUC03"
-        chdir: /opt/mqm/bin
+       cmd: ./dspmq
+       chdir: /opt/mqm/bin
       register: mqstat
     - debug:
         var: mqstat.stdout_lines
+
