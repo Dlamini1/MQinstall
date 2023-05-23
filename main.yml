@@ -5,6 +5,6 @@
   strategy: free
   become: true
   roles:
-    - { role: mq-objects}
+    - { role: mq-object}
    # - { role: filesystem}
     #- { role: mq-installation}
