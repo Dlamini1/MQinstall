@@ -1,10 +1,9 @@
 ---
 #- name: Stop the queue manager
 #  shell: 
-#    cmd: ./endmqm -i MQMFTA1
+#    cmd: ./endmqm -i QMGR
 #  args:
-    #chdir: /opt/mqm/bin
-#    chdir: /apps/wmq/9.2/bin
+     chdir: /opt/mqm/bin
 #  become_user: "mqm"
   
 - name: Get MQ packages

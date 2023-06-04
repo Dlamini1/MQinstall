@@ -1,8 +1,0 @@
----
-- name: IBM MQ
-  hosts: all
-  gather_facts: False
-  strategy: free
-  become: true
-  roles:
-    - { role: qmgr-status }
