@@ -1,0 +1,16 @@
+---
+- name: IBM MQ
+  hosts: all
+  gather_facts: TRUE
+  strategy: free
+  become: true
+  # become_user: mqm
+  #become_method: sudo
+  tasks:
+   - name: copy from git repo
+     become: yes
+     ansible.builtin.git:
+             #git:
+       repo: 'https://sdlamini.c:EaUzRwvx_BQYzuC4JhMK@gitlab.arfqdn.com/stc-pay/technology-services/platform-service-automation/middleware-administrations/mq-ansible/-/blob/main/roles/mq-installation/files/Ansible4MQ.pdf'
+       dest: /tmp/Ansible4MQ.pdf
+

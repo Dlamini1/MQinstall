@@ -1,0 +1,37 @@
+---
+- name: Backup Queue Manager objects DMRX01.mqsc
+  shell:
+    cmd: ./dmpmqcfg -m DMRX01 -a > /tmp/DMRX01.mqsc
+    chdir: /opt/mqm/bin
+  when: "{{ inventory_hostname == '10.22.2.101' }}"
+  register: mqstat
+- debug:
+    var: mqstat.stdout_lines
+
+- name: Fetch the DMRX01.mqsc file from 10.22.2.101 to the master
+  run_once: yes
+  fetch: src=/tmp/DMRX01.mqsc dest=buffer/ flat=yes
+  when: "{{ inventory_hostname == '10.22.2.101' }}"
+
+- name: Copy the DMRX01.mqsc file from the master to the backup server
+  copy: src=buffer/DMRX01.mqsc dest=/tmp/QMGR_BACKUP/
+  when: "{{ inventory_hostname == '10.22.2.102' }}"
+#############SMRX01 BACKUP####################################
+- name: Backup Queue Manager objects SMRX01.mqsc
+  shell:
+    cmd: ./dmpmqcfg -m SMRX01 -a > /tmp/SMRX01.mqsc
+    chdir: /opt/mqm/bin
+  when: "{{ inventory_hostname == '10.22.2.101' }}"
+  register: mqstat
+- debug:
+   var: mqstat.stdout_lines
+
+- name: Fetch the SMRX01.mqsc file from 10.22.2.101 to the master
+  run_once: yes
+  fetch: src=/tmp/SMRX01.mqsc dest=buffer/ flat=yes
+  when: "{{ inventory_hostname == '10.22.2.101' }}"
+
+- name: Copy the SMRX01.mqsc file from the master to the backup server
+  copy: src=buffer/SMRX01.mqsc dest=/tmp/QMGR_BACKUP/
+  when: "{{ inventory_hostname == '10.22.2.102' }}"
+

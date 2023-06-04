@@ -1,16 +1,11 @@
 ---
 - name: IBM MQ
   hosts: all
-  gather_facts: false
+  gather_facts: FALSE
   strategy: free
-  become_user: mqm
-  become_method: sudo
   become: true
   roles:
-    - { role: mq-object}
-   # - { role: filesystem}
-    #- { role: mq-installation}
-    
-    
-  
+    - { role: qmgr-backup }
+   #- { role: mq-installation }
+   #- { role: mq-uninstallation }
 

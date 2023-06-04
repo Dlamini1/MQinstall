@@ -1,0 +1,57 @@
+---
+- name: CREATE QMGR
+  shell:
+    cmd: ./crtmqm -sx -fs 3072M RMRX01
+    chdir: /opt/mqm/bin
+  register: mqstat
+- debug:
+    var: mqstat.stdout_lines
+
+- name: DISPLAY QMGR STATUS
+  shell:
+    cmd: ./dspmq
+    chdir: /opt/mqm/bin
+  register: mqstat
+- debug:
+    var: mqstat.stdout_lines
+
+- name: START QMGR
+  shell:
+    cmd: ./strmqm RMRX01
+    chdir: /opt/mqm/bin
+  register: mqstat
+- debug:
+    var: mqstat.stdout_lines
+
+- name: DISPLAY QMGR STATUS
+  shell:
+    cmd: ./dspmq
+    chdir: /opt/mqm/bin
+  register: mqstat
+- debug:
+    var: mqstat.stdout_lines
+
+
+- name: Display QMGR properties
+  shell:
+    cmd: echo "dis qmgr all" | runmqsc RMRX01
+    chdir: /opt/mqm/bin
+  register: mqstat
+- debug:
+    var: mqstat.stdout_lines
+
+- name: Define Murex Listener
+  shell:
+    cmd: echo "define listener(MUREX.LISTENER) trptype(tcp) port(1515) control(qmgr)" | runmqsc RMRX01
+    chdir: /opt/mqm/bin
+  register: mqstat
+- debug:
+    var: mqstat.stdout_lines
+
+- name: Start Listener
+  shell:
+    cmd: echo "start listener(MUREX.LISTENER)" | runmqsc RMRX01
+    chdir: /opt/mqm/bin
+  register: mqstat
+- debug:
+    var: mqstat.stdout_lines

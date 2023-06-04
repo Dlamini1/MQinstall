@@ -1,0 +1,74 @@
+---
+
+#- name: "Fail when required directories do not exist"
+#  fail:
+#    msg: "Required Installation File or Directory is missing: {{ item.item }}"
+#  when: "{{ item.stat.exists | bool}} == false"
+#  with_items: "{{ initial_file_check.results }}"
+
+- name: "Install bc dependency (for mqconfig)"
+  package:
+    name: bc
+    state: present
+  tags:
+    - prereq
+
+- name: Ensure group exists
+  group:
+    name: "mqm"
+    state: present
+  tags:
+    - prereq
+
+- name: Ensure user exists
+  user:
+    name: "mqm"
+    group: "mqm"
+    state: present
+  tags:
+    - prereq
+
+- name: Ensure Filesystem directories are available
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "mqm"
+    group: "mqm"
+  with_items:
+    - "/var/mqm"
+    - "/var/mqm/errors"
+    
+  tags:
+    - prereq
+    
+- name: "Create install directory"
+  file:
+    #path: "{{ webspheremq.installation_path }}"
+    path: /opt/mqm/bin/MQInstall
+    state: directory
+    
+- name: Download MQ installation file
+  ansible.builtin.unarchive:
+    src: "http://10.22.7.83:8081/repository/middleware-mq/mqinstallfiles/IBM_MQ_9.3.0.2_LINUX_X86-64.tar.gz"
+    dest: "/opt/mqm/bin/MQInstall"
+    owner: "mqm"
+    group: "mqm"
+    remote_src: yes
+
+- name: Change permission of directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "mqm"
+    group: "mqm"
+    recurse: yes
+  with_items:
+    - "/var/mqm"
+  become: yes
+  tags:
+    - prereq
+
+- name: "Enable SELinux"
+  selinux:
+    policy: targeted
+    state: enforcing

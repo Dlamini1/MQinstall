@@ -1,0 +1,177 @@
+- name: CREATE LOCAL PHB.SAR.TO.SWF
+  shell:
+    cmd: echo "DEFINE QLOCAL(PHB.SAR.TO.SWF) BOQNAME(PHB.SAR.TO.SWF.BOQ) BOTHRESH(3) DEFPSIST(YES) MAXDEPTH(50000)" | runmqsc TEST
+    chdir: /opt/mqm/bin
+  register: mqstat
+- debug:
+    var: mqstat.stdout_lines
+		
+- name: CREATE LOCAL QUEUE:PHB.SWF.TO.SAR
+  shell:
+    cmd: echo "DEFINE QLOCAL(PHB.SWF.TO.SAR) BOQNAME(PHB.SWF.TO.SAR.BOQ) BOTHRESH(3) DEFPSIST(YES) MAXDEPTH(50000)" | runmqsc TEST
+    chdir: /opt/mqm/bin
+  register: mqstat
+- debug:
+    var: mqstat.stdout_lines
+	
+- name: CREATE LOCAL QUEUE:PHB.TO.SWF
+  shell:
+    cmd: echo "DEFINE QLOCAL(PHB.TO.SWF) BOQNAME(PHB.TO.SWF.BOQ) BOTHRESH(3) DEFPSIST(YES) MAXDEPTH(50000)" | runmqsc TEST
+    chdir: /opt/mqm/bin
+  register: mqstat
+- debug:
+    var: mqstat.stdout_lines
+		
+- name: CREATE LOCAL QUEUE:SWF.ERROR
+  shell:
+    cmd: echo "DEFINE QLOCAL(SWF.ERROR) BOQNAME(SWF.ERROR.BOQ) BOTHRESH(3) DEFPSIST(YES) MAXDEPTH(50000)" | runmqsc TEST
+    chdir: /opt/mqm/bin
+  register: mqstat
+- debug:
+    var: mqstat.stdout_lines
+	
+- name: CREATE LOCAL QUEUE:SWF.TO.PHB.BIC
+  shell:
+    cmd: echo "DEFINE QLOCAL(SWF.TO.PHB.BIC) BOQNAME(SWF.TO.PHB.BIC.BOQ) BOTHRESH(3) DEFPSIST(YES) MAXDEPTH(50000)" | runmqsc TEST
+    chdir: /opt/mqm/bin
+  register: mqstat
+- debug:
+    var: mqstat.stdout_lines
+		
+- name: CREATE LOCAL QUEUE:SWF.TO.PHB
+  shell:
+    cmd: echo "DEFINE QLOCAL(SWF.TO.PHB) BOQNAME(SWF.TO.PHB.BOQ) BOTHRESH(3) DEFPSIST(YES) MAXDEPTH(50000)" | runmqsc TEST
+    chdir: /opt/mqm/bin
+  register: mqstat
+- debug:
+    var: mqstat.stdout_lines
+		
+#########BACKOUT QUEUES
+- name: CREATE LOCAL QUEUE:PHB.SAR.TO.SWF.BOQ
+  shell:
+    cmd: echo "DEFINE QL(PHB.SAR.TO.SWF.BOQ) DESCR (PHB.SAR.TO.SWF_Backout_Queue)" | runmqsc TEST
+    chdir: /opt/mqm/bin
+  register: mqstat
+- debug:
+    var: mqstat.stdout_lines
+
+- name: CREATE LOCAL QUEUE:PHB.SWF.TO.SAR.BOQ
+  shell:
+    cmd: echo "DEFINE QL(PHB.SWF.TO.SAR.BOQ) DESCR (PHB.SWF.TO.SAR.BOQ_Backout_Queue)" | runmqsc TEST
+    chdir: /opt/mqm/bin
+  register: mqstat
+- debug:
+    var: mqstat.stdout_lines
+		
+- name: CREATE LOCAL QUEUE:PHB.TO.SWF.BOQ
+  shell:
+    cmd: echo "DEFINE QL(PHB.TO.SWF.BOQ) DESCR (PHB.TO.SWF.BOQ_Backout_Queue)" | runmqsc TEST
+    chdir: /opt/mqm/bin
+  register: mqstat
+- debug:
+    var: mqstat.stdout_lines
+		
+- name: CREATE LOCAL QUEUE:SWF.ERROR.BOQ
+  shell:
+    cmd: echo "DEFINE QL(SWF.ERROR.BOQ) DESCR (SWF.ERROR.BOQ_Backout_Queue)" | runmqsc TEST
+    chdir: /opt/mqm/bin
+  register: mqstat
+- debug:
+    var: mqstat.stdout_lines
+		
+- name: CREATE LOCAL QUEUE:SWF.TO.PHB.BIC.BOQ
+  shell:
+    cmd: echo "DEFINE QL(SWF.TO.PHB.BIC.BOQ) DESCR (SWF.TO.PHB.BIC_Backout_Queue)" | runmqsc TEST
+    chdir: /opt/mqm/bin
+  register: mqstat
+- debug:
+    var: mqstat.stdout_lines
+		
+- name: CREATE LOCAL QUEUE:SWF.TO.PHB.BOQ
+  shell:
+    cmd: echo "DEFINE QL(SWF.TO.PHB.BOQ) DESCR (SWF.TO.PHB_Backuout_Queue)" | runmqsc TEST
+    chdir: /opt/mqm/bin
+  register: mqstat
+- debug:
+    var: mqstat.stdout_lines
+	
+#########ALIAS QUEUE
+- name: CREATE LOCAL QUEUE:PHB.FROM.SWF.BIC.IN
+  shell:
+    cmd: echo "DEFINE QALIAS (PHB.FROM.SWF.BIC.IN) TARGET (SWF.TO.PHB.BIC)" | runmqsc TEST
+    chdir: /opt/mqm/bin
+  register: mqstat
+- debug:
+    var: mqstat.stdout_lines
+
+- name: CREATE LOCAL QUEUE:PHB.FROM.SWF.IN
+  shell:
+    cmd: echo "DEFINE QALIAS (PHB.FROM.SWF.IN) TARGET (SWF.TO.PHB)" | runmqsc TEST
+    chdir: /opt/mqm/bin
+  register: mqstat
+- debug:
+    var: mqstat.stdout_lines
+
+- name: CREATE LOCAL QUEUE:PHB.SAR.FROM.SWF.IN
+  shell:
+    cmd: echo "DEFINE QALIAS (PHB.SAR.FROM.SWF.IN) TARGET (PHB.SWF.TO.SAR)" | runmqsc TEST
+    chdir: /opt/mqm/bin
+  register: mqstat
+- debug:
+    var: mqstat.stdout_lines
+		
+- name: CREATE LOCAL QUEUE:PHB.SAR.TO.SWF.OUT
+  shell:
+    cmd: echo "DEFINE QALIAS (PHB.SAR.TO.SWF.OUT) TARGET (PHB.SAR.TO.SWF)" | runmqsc TEST
+    chdir: /opt/mqm/bin
+  register: mqstat
+- debug:
+    var: mqstat.stdout_lines
+		
+- name: CREATE LOCAL QUEUE:PHB.SWF.FROM.SAR.IN
+  shell:
+    cmd: echo "DEFINE QALIAS (PHB.SWF.FROM.SAR.IN) TARGET (PHB.SAR.TO.SWF)" | runmqsc TEST
+    chdir: /opt/mqm/bin
+  register: mqstat
+- debug:
+    var: mqstat.stdout_lines
+		
+- name: CREATE LOCAL QUEUE:PHB.SWF.TO.SAR.OUT
+  shell:
+    cmd: echo "DEFINE QALIAS (PHB.SWF.TO.SAR.OUT) TARGET (PHB.SWF.TO.SAR)" | runmqsc TEST
+    chdir: /opt/mqm/bin
+  register: mqstat
+- debug:
+    var: mqstat.stdout_lines
+
+- name: CREATE LOCAL QUEUE:PHB.TO.SWF.OUT
+  shell:
+    cmd: echo "DEFINE QALIAS (PHB.TO.SWF.OUT) TARGET (PHB.TO.SWF)" | runmqsc TEST
+    chdir: /opt/mqm/bin
+  register: mqstat
+- debug:
+    var: mqstat.stdout_lines
+	
+- name: CREATE LOCAL QUEUE:SWF.FROM.PHB.IN
+  shell:
+    cmd: echo "DEFINE QALIAS (SWF.FROM.PHB.IN) TARGET (PHB.TO.SWF)" | runmqsc TEST
+    chdir: /opt/mqm/bin
+  register: mqstat
+- debug:
+    var: mqstat.stdout_lines
+		
+- name: CREATE LOCAL QUEUE:SWF.TO.PHB.BIC.OUT
+  shell:
+    cmd: echo "DEFINE QALIAS (SWF.TO.PHB.BIC.OUT) TARGET (SWF.TO.PHB.BIC)" | runmqsc TEST
+    chdir: /opt/mqm/bin
+  register: mqstat
+- debug:
+    var: mqstat.stdout_lines
+		
+- name: CREATE LOCAL QUEUE:SWF.TO.PHB.OUT
+  shell:
+    cmd: echo "DEFINE QALIAS (SWF.TO.PHB.OUT) TARGET (SWF.TO.PHB) DESCR (Incoming_SWIFT_messages/Acks/Nacks_from_SWIFT_to_PaymentHub)" | runmqsc TEST
+    chdir: /opt/mqm/bin
+  register: mqstat
+- debug:
+    var: mqstat.stdout_lines

@@ -1,0 +1,19 @@
+---
+#MQ ansible
+- hosts: all
+  become_user: root
+  become: true
+  #become_method: sudo
+  tasks:
+############DMRX01 BACKUP####################################
+     - name: Fetch the DMRX01.mqsc file from 10.22.2.101 to the master
+       run_once: yes
+       fetch: src=/tmp/IBM_MQ_9.3.0.2_LINUX_X86-64.tar.gz dest=buffer1/ flat=yes
+       when: "{{ inventory_hostname == '10.22.7.83' }}"
+
+     - name: Copy the DMRX01.mqsc file from the master to the backup server
+       copy: src=buffer1/IBM_MQ_9.3.0.2_LINUX_X86-64.tar.gz dest=/tmp/
+       when: "{{ inventory_hostname == '10.22.7.122' }}"
+#############SMRX01 BACKUP####################################
+     
+

@@ -1,0 +1,8 @@
+---
+- name: Prerequisites
+  include: prerequisites.yml
+  tags:
+    - prereq
+
+- name: Configuration
+  include: configure.yml

@@ -1,0 +1,26 @@
+---
+#- name: Stop the queue manager
+#  shell: 
+#    cmd: ./endmqm -i MQMFTA1
+#  args:
+    #chdir: /opt/mqm/bin
+#    chdir: /apps/wmq/9.2/bin
+#  become_user: "mqm"
+  
+- name: Get MQ packages
+  shell: "rpm -qa | grep MQ"
+  register: packages
+
+- name: Remove MQ packages --- This works fine.
+  yum:
+    name: "{{ item }}"
+    state: absent
+  loop: "{{ packages.stdout_lines }}"
+  become: True
+
+#test this task
+#- name: Install MQSeriesRuntime
+#  shell: sudo rpm -e --noscripts MQSeriesAMQP-9.2.0-0.x86_64 MQSeriesJava-9.2.0-0.x86_64 MQSeriesMan-9.2.0-0.x86_64 MQSeriesGSKit-9.2.0-0.x86_64 MQSeriesClient-9.2.0-0.x86_64 MQSeriesRuntime-9.2.0-0.x86_64 MQSeriesServer-9.2.0-0.x86_64 MQSeriesSDK-9.2.0-0.x86_64 MQSeriesJRE-9.2.0-0.x86_64 MQSeriesSamples-9.2.0-0.x86_64 MQSeriesWeb-9.2.0-0.x86_64
+#  become_user: root
+  
+

@@ -1,0 +1,7 @@
+---
+# defaults file for setting mqaut
+MQ:
+  user: mqm
+  group: mqm
+  command_path: /opt/mqm/bin
+#

@@ -1,0 +1,39 @@
+---
+#MQ ansible
+- hosts: all
+  become_user: mqm
+  become: true
+  become_method: sudo
+  tasks:
+    - name: CREATE QMGR
+      shell:
+       cmd: ./crtmqm TEST
+       chdir: /opt/mqm/bin
+      register: mqstat
+    - debug:
+        var: mqstat.stdout_lines
+
+    - name: DISPLAY QMGR STATUS
+      shell:
+       cmd: ./dspmq
+       chdir: /opt/mqm/bin
+      register: mqstat
+    - debug:
+        var: mqstat.stdout_lines
+
+    - name: START QMGR
+      shell:
+       cmd: ./strmqm TEST
+       chdir: /opt/mqm/bin
+      register: mqstat
+    - debug:
+        var: mqstat.stdout_lines
+
+    - name: DISPLAY QMGR STATUS
+      shell:
+       cmd: ./dspmq
+       chdir: /opt/mqm/bin
+      register: mqstat
+    - debug:
+        var: mqstat.stdout_lines
+

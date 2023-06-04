@@ -1,0 +1,91 @@
+---
+- name: Ensure Install package is available
+  stat:
+    path: "/opt/mqm/bin/MQInstall/MQServer"
+  register: package
+
+- name: Fail when package unavailable
+  fail: "msg='Install archive not found path: {{ /opt/mqm }}/{{ /opt/mqm/MQInstall }}'"
+  when: package.stat.exists == False
+
+- name: Accept License
+  shell: ./mqlicense.sh -accept
+  args:
+    chdir: "/opt/mqm/bin/MQInstall/MQServer"
+  
+- name: Find all rpm files in /tmp folder
+  find:
+    paths: "/opt/mqm/bin/MQInstall/MQServer"
+    patterns: "*.rpm"
+  register: rpm_files
+ 
+- name: Setting rpm_list
+  set_fact:
+   rpm_list: "{{ rpm_files.files | map(attribute='path') | list}}"
+    
+- name: Install MQSeriesRuntime
+  shell: sudo rpm -ivh MQSeriesRuntime-*                     
+  args:
+    chdir: /opt/mqm/bin/MQInstall/MQServer
+    
+- name: Install MQSeriesClient
+  shell: sudo rpm -ivh MQSeriesClient-*
+  args:
+    chdir: /opt/mqm/bin/MQInstall/MQServer 
+    
+- name: Install MQSeriesJRE
+  shell: sudo rpm -ivh MQSeriesJRE-*                     
+  args:
+    chdir: /opt/mqm/bin/MQInstall/MQServer
+    
+- name: Install MQSeriesJava
+  shell: sudo rpm -ivh MQSeriesJava-*                      
+  args:
+    chdir: /opt/mqm/bin/MQInstall/MQServer
+    
+- name: Install MQSeriesSDK
+  shell: sudo rpm -ivh MQSeriesSDK-*                      
+  args:
+    chdir: /opt/mqm/bin/MQInstall/MQServer
+    
+- name: Install MQSeriesServer
+  shell: sudo rpm -ivh MQSeriesServer-*                      
+  args:
+    chdir: /opt/mqm/bin/MQInstall/MQServer
+        
+- name: Install MQSeriesGSKit
+  shell: sudo rpm -ivh MQSeriesGSKit-*                      
+  args:
+    chdir: /opt/mqm/bin/MQInstall/MQServer
+    
+- name: Install MQSeriesWeb
+  shell: sudo rpm -ivh MQSeriesWeb-*                      
+  args:
+    chdir: /opt/mqm/bin/MQInstall/MQServer
+    
+- name: Install MQSeriesSamples
+  shell: sudo rpm -ivh MQSeriesSamples-*                 
+  args:
+    chdir: /opt/mqm/bin/MQInstall/MQServer
+    
+- name: setmqinst path
+  shell: source /opt/mqm/bin/setmqenv -s
+  shell: sudo /opt/mqm/bin/setmqinst -i -p /opt/mqm
+
+- name: Update mqm user .profile
+  template:
+    owner: "mqm"
+    group: "mqm"
+    src: profile.j2
+    dest: "/home/mqm"
+    mode: "0644"
+  
+- name: ansible create MQinstall directory
+  file:
+      path: /opt/mqm
+      state: directory
+      
+- name: Removing the MQInstall directory
+  file:
+      path: /opt/mqm/bin/MQInstall
+      state: absent

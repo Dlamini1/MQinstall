@@ -1,0 +1,51 @@
+---
+- name: Ensure Install package is available
+  stat:
+    path: "/opt/mqm/bin/MQInstall/MQServer"
+  register: package
+
+- name: Fail when package unavailable
+  fail: "msg='Install archive not found path: {{ /opt/mqm }}/{{ /opt/mqm/MQInstall }}'"
+  when: package.stat.exists == False
+
+- name: Accept License
+  shell: ./mqlicense.sh -accept
+  args:
+    chdir: "/opt/mqm/bin/MQInstall/MQServer"
+  
+- name: Find all rpm files in /tmp folder
+  find:
+    paths: "/opt/mqm/bin/MQInstall/MQServer"
+    patterns: "*.rpm"
+  register: rpm_files
+ 
+- name: Setting rpm_list
+  set_fact:
+   rpm_list: "{{ rpm_files.files | map(attribute='path') | list}}"
+    
+- name: Install MQSeriesRuntime
+  shell: sudo rpm -ivh MQSeriesRuntime* MQSeriesJRE* MQSeriesJava* MQSeriesSD* MQSeriesServer* MQSeriesClient* MQSeriesGSKit* MQSeriesSamples*                       
+  args:
+    chdir: /opt/mqm/bin/MQInstall/MQServer
+    
+- name: setmqinst path
+  shell: source /opt/mqm/bin/setmqenv -s
+  shell: sudo /opt/mqm/bin/setmqinst -i -p /opt/mqm
+
+- name: Update mqm user .profile
+  template:
+    owner: "mqm"
+    group: "mqm"
+    src: profile.j2
+    dest: "/home/mqm"
+    mode: "0644"
+  
+- name: ansible create MQinstall directory
+  file:
+      path: /opt/mqm
+      state: directory
+      
+- name: Removing the MQInstall directory
+  file:
+      path: /opt/mqm/bin/MQInstall
+      state: absent
