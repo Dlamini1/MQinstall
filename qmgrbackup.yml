@@ -1,0 +1,27 @@
+---
+#MQ ansible
+- hosts: all
+  become_user: mqm
+  become: true
+  become_method: sudo
+  tasks:
+
+     - name: Backup Queue Manager objects QM1.mqsc
+       shell:
+        cmd: ./dmpmqcfg -m QM1 -a > /tmp/QM1.mqsc
+        chdir: /opt/mqm/bin
+       when: "{{ inventory_hostname == 'server1' }}"
+       register: mqstat
+     - debug:
+        var: mqstat.stdout_lines
+
+     - name: Fetch the QM1.mqsc file from server1 to the master
+       run_once: yes
+       fetch: src=/tmp/QM1.mqsc dest=buffer/ flat=yes
+       when: "{{ inventory_hostname == 'server1' }}"
+
+     - name: Copy the QM1.mqsc file from the master to the backup server
+       copy: src=buffer/QM1.mqsc dest=/tmp/QMGR_BACKUP/
+       when: "{{ inventory_hostname == 'server2' }}"
+
+
